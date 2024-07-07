@@ -5,10 +5,8 @@ function createCard(cardContent, deleteCallback) {
     const likeButton = cardElement.querySelector('.card__like-button');
 
     //заполняем карточки контентом
-    const cardImage = cardElement.querySelector('.card__image');
-    const cardTitle = cardElement.querySelector('.card__title');
-    cardImage.src = cardContent.link;
-    cardTitle.textContent = cardContent.name;
+    cardElement.querySelector('.card__image').src = cardContent.link;
+    cardElement.querySelector('.card__title').textContent = cardContent.name;
 
     //обработка клика для удаления карточки
     deleteButton.addEventListener('click', () => {
