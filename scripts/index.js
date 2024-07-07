@@ -26,7 +26,7 @@ function deleteCard(cardElement) {
     cardElement.remove();
 }
 
-// Контейнер для карточек и вывод карточек на страницу через places__list
+// Контейнер для карточек и вывод карточек на страницу через places__list и перебор массива initialCards
 const placesList = document.querySelector('.places__list');
 initialCards.forEach((cardContent) => {
     const cardElement = createCard(cardContent, deleteCard);
