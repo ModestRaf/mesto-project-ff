@@ -1,3 +1,10 @@
+import './pages/index.css';
+import { initialCards } from './cards.js';
+
+import avatar from './images/avatar.jpg';
+const profileImage = document.querySelector('.profile__image');
+profileImage.style.backgroundImage = `url(${avatar})`;
+
 function createCard(cardContent, deleteCallback) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -13,7 +20,7 @@ function createCard(cardContent, deleteCallback) {
         deleteCallback(cardElement);
     });
 
-    // кнопка лайка, пусть будет :)
+    // кнопка лайка
     likeButton.addEventListener('click', () => {
         likeButton.classList.toggle('card__like-button_is-active');
     });
