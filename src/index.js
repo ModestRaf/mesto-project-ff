@@ -29,7 +29,7 @@ initialCards.forEach((cardContent) => {
     const cardElement = createCard(cardContent, deleteCard);
     placesList.append(cardElement);
 
-    // Добавляем обработчик для открытия изображения в попапе
+    // обработчик для открытия изображения в попапе
     const cardImage = cardElement.querySelector('.card__image');
     cardImage.addEventListener('click', () => {
         openImagePopup(cardContent);
