@@ -1,8 +1,4 @@
-const popupImage = document.querySelector('.popup_type_image');
-const popupImageElement = popupImage.querySelector('.popup__image');
-const popupCaptionElement = popupImage.querySelector('.popup__caption');
-
-// Функции открытия и закрытия попапов с анимацие
+// Функции открытия и закрытия попапов с анимацией
 export function openPopup(popup) {
     popup.classList.add('popup_is-animated');
     popup.classList.add('popup_is-opened');
@@ -31,18 +27,8 @@ export function closePopupOnEsc(event) {
 }
 
 // закрытие попапов на оверлей
-function closePopupOnOverlay(event) {
+export function closePopupOnOverlay(event) {
     if (event.target.classList.contains('popup')) {
         closePopup(event.target);
     }
-}
-
-//открытие попапа с изображением
-export function openImagePopup(cardContent) {
-
-    popupImageElement.src = cardContent.link;
-    popupImageElement.alt = cardContent.name;
-    popupCaptionElement.textContent = cardContent.name;
-
-    openPopup(popupImage);
 }

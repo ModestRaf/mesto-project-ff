@@ -1,9 +1,12 @@
 import './pages/index.css';
 import {initialCards} from './components/cards.js';
 import {createCard, deleteCard} from './components/card.js';
-import {openPopup, closePopup, openImagePopup} from './components/modal.js';
+import {openPopup, closePopup} from './components/modal.js';
 import avatar from './images/avatar.jpg';
 
+const popupImage = document.querySelector('.popup_type_image');
+const popupImageElement = popupImage.querySelector('.popup__image');
+const popupCaptionElement = popupImage.querySelector('.popup__caption');
 //закрытие попапа
 const buttonsClosePopup = document.querySelectorAll('.popup__close');
 //профиль
@@ -26,14 +29,8 @@ profileImage.style.backgroundImage = `url(${avatar})`;
 // Контейнер для карточек и вывод карточек на страницу через places__list и перебор массива initialCards
 const placesList = document.querySelector('.places__list');
 initialCards.forEach((cardContent) => {
-    const cardElement = createCard(cardContent, deleteCard);
+    const cardElement = createCard(cardContent, deleteCard, openImagePopup);
     placesList.append(cardElement);
-
-    // обработчик для открытия изображения в попапе
-    const cardImage = cardElement.querySelector('.card__image');
-    cardImage.addEventListener('click', () => {
-        openImagePopup(cardContent);
-    });
 });
 
 // Обработчики кнопок
@@ -66,7 +63,7 @@ formNewPlace.addEventListener('submit', (event) => {
         link: placeLinkInput.value
     };
 
-    const newCardElement = createCard(newCardContent, deleteCard);
+    const newCardElement = createCard(newCardContent, deleteCard, openImagePopup);
 
     placesList.prepend(newCardElement); // новая карточка в начале списка
 
@@ -94,3 +91,11 @@ function handleFormSubmit(evt) {
 
 formEditProfile.addEventListener('submit', handleFormSubmit);
 
+//открытие попапа с изображением
+function openImagePopup(cardContent) {
+    popupImageElement.src = cardContent.link;
+    popupImageElement.alt = cardContent.name;
+    popupCaptionElement.textContent = cardContent.name;
+
+    openPopup(popupImage);
+}
