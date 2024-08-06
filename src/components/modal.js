@@ -11,7 +11,7 @@ export function closePopup(popup) {
     document.removeEventListener('keydown', closePopupOnEsc);
     popup.removeEventListener('click', closePopupOnOverlay);
 
-    popup.addEventListener('transitionend', () => {
+    popup.addEventListener('transition', () => {
         popup.classList.remove('popup_is-animated');
     }, {once: true});
 }
