@@ -57,18 +57,13 @@ buttonsClosePopup.forEach(button => {
 // Обработчик события сабмита формы добавления новой карточки
 formNewPlace.addEventListener('submit', (event) => {
     event.preventDefault();
-
     const newCardContent = {
         name: placeNameInput.value,
         link: placeLinkInput.value
     };
-
     const newCardElement = createCard(newCardContent, deleteCard, openImagePopup);
-
     placesList.prepend(newCardElement); // новая карточка в начале списка
-
     closePopup(formNewPlace.closest('.popup'));
-
     formNewPlace.reset(); // Очищаем форму
 });
 
@@ -99,3 +94,65 @@ function openImagePopup(cardContent) {
 
     openPopup(popupImage);
 }
+
+// Валидация формы "Редактировать профиль"
+function validateInput(inputElement) {
+    const errorElement = inputElement.nextElementSibling;
+    const namePattern = /^[a-zA-Zа-яА-Я- ]+$/;
+
+    if (!inputElement.validity.valid) {
+        if (inputElement.validity.valueMissing) {
+            errorElement.textContent = 'Вы пропустили это поле.';
+        } else if (inputElement.validity.tooShort || inputElement.validity.tooLong) {
+            errorElement.textContent = `Должно быть от ${inputElement.minLength} до ${inputElement.maxLength} символов`;
+        } else if (!namePattern.test(inputElement.value)) {
+            errorElement.textContent = 'Можно использовать только латинские или кириллические буквы, дефисы и пробелы';
+        } else {
+            errorElement.textContent = inputElement.validationMessage;
+        }
+        inputElement.classList.add('popup__input_type_error');
+        errorElement.classList.add('popup__error_visible');
+    } else {
+        errorElement.textContent = '';
+        inputElement.classList.remove('popup__input_type_error');
+        errorElement.classList.remove('popup__error_visible');
+    }
+
+    toggleSubmitButton(formEditProfile);
+}
+
+nameInput.addEventListener('input', () => {
+    validateInput(nameInput);
+});
+
+jobInput.addEventListener('input', () => {
+    validateInput(jobInput);
+});
+
+function toggleSubmitButton(form) {
+    const submitButton = form.querySelector('.popup__button');
+    if (form.checkValidity()) {
+        submitButton.removeAttribute('disabled');
+        submitButton.classList.add('popup__button_active');
+    } else {
+        submitButton.setAttribute('disabled', 'disabled');
+        submitButton.classList.remove('popup__button_active');
+    }
+}
+
+function clearValidationErrors(form) {
+    const inputElements = form.querySelectorAll('.popup__input');
+    inputElements.forEach((inputElement) => {
+        const errorElement = inputElement.nextElementSibling;
+        inputElement.classList.remove('popup__input_type_error');
+        errorElement.classList.remove('popup__error_visible');
+        errorElement.textContent = '';
+    });
+    toggleSubmitButton(form);
+}
+
+// Вызов при открытии формы редактирования профиля
+buttonEditProfile.addEventListener('click', () => {
+    clearValidationErrors(formEditProfile);
+    openPopup(document.querySelector('.popup_type_edit'));
+});

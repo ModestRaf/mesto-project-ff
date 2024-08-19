@@ -2,12 +2,34 @@
   width: 100%;
   height: 47px;
   border: 0;
-  border-bottom: 1px solid rgba(0, 0, 0, .2);
   font-size: 14px;
   line-height: 18px;
   box-sizing: border-box;
   padding: 10px 0 0;
   margin-bottom: 10px;
+}
+
+.popup__input:valid {
+  border-bottom: 1px solid rgba(0, 0, 0, .2);
+}
+
+.popup__input:invalid {
+  border-bottom: 1px solid #FF0000;
+}
+
+.popup__input_type_error {
+  border-bottom: 1px solid #FF0000;
+}
+
+.popup__error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  display: none; /* Ошибки будут скрыты по умолчанию */
+}
+
+.popup__error_visible {
+  display: block;
 }
 
 .popup__input:last-of-type {
