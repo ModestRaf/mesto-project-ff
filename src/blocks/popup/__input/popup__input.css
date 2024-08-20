@@ -25,7 +25,7 @@
   color: red;
   font-size: 12px;
   margin-top: 5px;
-  display: none; /* Ошибки будут скрыты по умолчанию */
+  display: none;
 }
 
 .popup__error_visible {

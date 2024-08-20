@@ -2,8 +2,21 @@ import './pages/index.css';
 import {initialCards} from './components/cards.js';
 import {createCard, deleteCard} from './components/card.js';
 import {openPopup, closePopup} from './components/modal.js';
+import {enableValidation, clearValidation} from './scripts/validation.js';
 import avatar from './images/avatar.jpg';
 
+// Настройки для валидации
+const validationConfig = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+};
+
+// Включаем валидацию всех форм
+enableValidation(validationConfig);
 const popupImage = document.querySelector('.popup_type_image');
 const popupImageElement = popupImage.querySelector('.popup__image');
 const popupCaptionElement = popupImage.querySelector('.popup__caption');
@@ -40,11 +53,14 @@ buttonEditProfile.addEventListener('click', () => {
     nameInput.value = profileTitle.textContent || '';
     jobInput.value = profileDescription.textContent || '';
 
+    clearValidation(formEditProfile, validationConfig);
+
     // Открываем попап
     openPopup(document.querySelector('.popup_type_edit'));
 });
 
 buttonAddCard.addEventListener('click', () => {
+    clearValidation(formNewPlace, validationConfig);
     openPopup(document.querySelector('.popup_type_new-card'));
 });
 
@@ -94,65 +110,3 @@ function openImagePopup(cardContent) {
 
     openPopup(popupImage);
 }
-
-// Валидация формы "Редактировать профиль"
-function validateInput(inputElement) {
-    const errorElement = inputElement.nextElementSibling;
-    const namePattern = /^[a-zA-Zа-яА-Я- ]+$/;
-
-    if (!inputElement.validity.valid) {
-        if (inputElement.validity.valueMissing) {
-            errorElement.textContent = 'Вы пропустили это поле.';
-        } else if (inputElement.validity.tooShort || inputElement.validity.tooLong) {
-            errorElement.textContent = `Должно быть от ${inputElement.minLength} до ${inputElement.maxLength} символов`;
-        } else if (!namePattern.test(inputElement.value)) {
-            errorElement.textContent = 'Можно использовать только латинские или кириллические буквы, дефисы и пробелы';
-        } else {
-            errorElement.textContent = inputElement.validationMessage;
-        }
-        inputElement.classList.add('popup__input_type_error');
-        errorElement.classList.add('popup__error_visible');
-    } else {
-        errorElement.textContent = '';
-        inputElement.classList.remove('popup__input_type_error');
-        errorElement.classList.remove('popup__error_visible');
-    }
-
-    toggleSubmitButton(formEditProfile);
-}
-
-nameInput.addEventListener('input', () => {
-    validateInput(nameInput);
-});
-
-jobInput.addEventListener('input', () => {
-    validateInput(jobInput);
-});
-
-function toggleSubmitButton(form) {
-    const submitButton = form.querySelector('.popup__button');
-    if (form.checkValidity()) {
-        submitButton.removeAttribute('disabled');
-        submitButton.classList.add('popup__button_active');
-    } else {
-        submitButton.setAttribute('disabled', 'disabled');
-        submitButton.classList.remove('popup__button_active');
-    }
-}
-
-function clearValidationErrors(form) {
-    const inputElements = form.querySelectorAll('.popup__input');
-    inputElements.forEach((inputElement) => {
-        const errorElement = inputElement.nextElementSibling;
-        inputElement.classList.remove('popup__input_type_error');
-        errorElement.classList.remove('popup__error_visible');
-        errorElement.textContent = '';
-    });
-    toggleSubmitButton(form);
-}
-
-// Вызов при открытии формы редактирования профиля
-buttonEditProfile.addEventListener('click', () => {
-    clearValidationErrors(formEditProfile);
-    openPopup(document.querySelector('.popup_type_edit'));
-});
