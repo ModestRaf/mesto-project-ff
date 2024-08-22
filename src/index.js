@@ -1,9 +1,8 @@
 import './pages/index.css';
-import {initialCards} from './components/cards.js';
 import {createCard, deleteCard} from './components/card.js';
 import {openPopup, closePopup} from './components/modal.js';
 import {enableValidation, clearValidation} from './scripts/validation.js';
-import {getUserInfo, getInitialCards} from './scripts/api.js';
+import {getUserInfo, getInitialCards, uploadNewPlace} from './scripts/api.js';
 import avatar from './images/avatar.jpg';
 
 //аватарка
@@ -70,22 +69,22 @@ formNewPlace.addEventListener('submit', (event) => {
         name: placeNameInput.value,
         link: placeLinkInput.value
     };
-    const newCardElement = createCard(newCardContent, deleteCard, openImagePopup);
-    placesList.prepend(newCardElement); // новая карточка в начале списка
-    closePopup(formNewPlace.closest('.popup'));
-    formNewPlace.reset(); // Очищаем форму
+
+    uploadNewPlace(newCardContent.name, newCardContent.link)
+        .then((uploadedCardData) => {
+            const newCardElement = createCard(uploadedCardData, deleteCard, openImagePopup);
+            placesList.prepend(newCardElement); // новая карточка в начале списка
+            closePopup(formNewPlace.closest('.popup'));
+            formNewPlace.reset(); // Очищаем форму
+        })
 });
 
 // Обработчик события сабмита формы редактирования профиля
-
 function handleFormSubmit(evt) {
     evt.preventDefault(); // Отменяем стандартную отправку формы
 
-    const nameValue = nameInput.value;
-    const jobValue = jobInput.value;
-
-    profileTitle.textContent = nameValue;
-    profileDescription.textContent = jobValue;
+    profileTitle.textContent = nameInput.value;
+    profileDescription.textContent = jobInput.value;
 
     closePopup(formEditProfile.closest('.popup'));
 }
@@ -109,6 +108,8 @@ const profileDescription = document.querySelector('.profile__description');
 
 Promise.all([getUserInfo(), getInitialCards()])
     .then(([userData, initialCards]) => {
+        profileDescription.textContent = userData.about;
+        profileTitle.textContent = userData.name;
         initialCards.forEach((cardContent) => {
             const cardElement = createCard(cardContent, deleteCard, openImagePopup);
             placesList.append(cardElement);
