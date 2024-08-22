@@ -16,15 +16,11 @@ function hideInputError(formElement, inputElement, settings) {
 
 // Функция, которая проверяет валидность поля ввода
 function checkInputValidity(formElement, inputElement, settings) {
-    const namePattern = /^[a-zA-Zа-яА-Я- ]+$/;
     if (!inputElement.validity.valid) {
         if (inputElement.validity.valueMissing) {
             showInputError(formElement, inputElement, 'Вы пропустили это поле.', settings);
         } else if (inputElement.validity.tooShort || inputElement.validity.tooLong) {
             showInputError(formElement, inputElement, `Должно быть от ${inputElement.minLength} до ${inputElement.maxLength} символов.`, settings);
-        } else if (inputElement.type === 'text' && !namePattern.test(inputElement.value)) {
-            const errorMessage = inputElement.dataset.error || "Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы.";
-            showInputError(formElement, inputElement, errorMessage, settings);
         } else if (inputElement.type === 'url' && inputElement.validity.typeMismatch) {
             showInputError(formElement, inputElement, 'Введите правильный URL.', settings);
         } else {

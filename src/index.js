@@ -3,6 +3,7 @@ import {initialCards} from './components/cards.js';
 import {createCard, deleteCard} from './components/card.js';
 import {openPopup, closePopup} from './components/modal.js';
 import {enableValidation, clearValidation} from './scripts/validation.js';
+import {getUserInfo} from './scripts/api.js';
 import avatar from './images/avatar.jpg';
 
 // Настройки для валидации
@@ -14,9 +15,6 @@ const validationConfig = {
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'popup__error_visible'
 };
-
-// Включаем валидацию всех форм
-enableValidation(validationConfig);
 const popupImage = document.querySelector('.popup_type_image');
 const popupImageElement = popupImage.querySelector('.popup__image');
 const popupCaptionElement = popupImage.querySelector('.popup__caption');
@@ -110,3 +108,6 @@ function openImagePopup(cardContent) {
 
     openPopup(popupImage);
 }
+
+// Включаем валидацию всех форм
+enableValidation(validationConfig);
