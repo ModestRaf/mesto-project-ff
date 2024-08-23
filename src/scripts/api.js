@@ -8,11 +8,11 @@ export function getInitialCards() {
         .then(res => res.json())
         .then((data) => {
             console.log(data);
-            return (data);
+            return data;
         });
 }
 
-export function getUserInfo() {
+export function editUserInfo() {
     return fetch(`https://nomoreparties.co/v1/wff-cohort-21/users/me`, {
         method: 'PATCH',
         headers: {
@@ -21,7 +21,7 @@ export function getUserInfo() {
         },
         body: JSON.stringify({
             name: 'ModestTea',
-            about: 'Старший специалист'
+            about: 'это не может продолжаться',
         })
     })
         .then(res => res.json())
@@ -49,3 +49,31 @@ export function uploadNewPlace(name, link) {
             return data;
         });
 }
+
+window.addLike = function (cardId) {
+    return fetch(`https://nomoreparties.co/v1/wff-cohort-21/cards/likes/${cardId}`, {
+        method: 'PUT',
+        headers: {
+            authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
+        }
+    })
+        .then(res => res.json())
+        .then((data) => {
+            console.log('Card liked:', data);
+            return data;
+        });
+};
+
+window.removeLike = function (cardId) {
+    return fetch(`https://nomoreparties.co/v1/wff-cohort-21/cards/likes/${cardId}`, {
+        method: 'DELETE',
+        headers: {
+            authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
+        }
+    })
+        .then(res => res.json())
+        .then((data) => {
+            console.log('Like removed:', data);
+            return data;
+        });
+};

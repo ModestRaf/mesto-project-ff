@@ -1,8 +1,23 @@
+.card__like-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  width: 23px;
+  height: 35px;
+}
+
+.card__like-count {
+  font-weight: 400;
+  font-size: 13px;
+  color: #000;
+}
+
 .card__like-button {
   width: 21px;
   height: 18px;
   background: transparent url('../../../images/like-inactive.svg') no-repeat;
-  
+
   background-size: 21px 18px;
   border: none;
   cursor: pointer;

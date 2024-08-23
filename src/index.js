@@ -2,7 +2,7 @@ import './pages/index.css';
 import {createCard, deleteCard} from './components/card.js';
 import {openPopup, closePopup} from './components/modal.js';
 import {enableValidation, clearValidation} from './scripts/validation.js';
-import {getUserInfo, getInitialCards, uploadNewPlace} from './scripts/api.js';
+import {editUserInfo, getInitialCards, uploadNewPlace, addLike, removeLike} from './scripts/api.js';
 import avatar from './images/avatar.jpg';
 
 //аватарка
@@ -105,9 +105,11 @@ enableValidation(validationConfig);
 
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
+let userId = undefined;
 
-Promise.all([getUserInfo(), getInitialCards()])
+Promise.all([editUserInfo(), getInitialCards()])
     .then(([userData, initialCards]) => {
+        userId = userData._id;
         profileDescription.textContent = userData.about;
         profileTitle.textContent = userData.name;
         initialCards.forEach((cardContent) => {
