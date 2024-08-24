@@ -11,10 +11,11 @@ export const getInitialCards = () => {
     return fetch(`${config.baseUrl}/cards`, {
         headers: config.headers
     })
-        .then(res => res.json())
-        .then((data) => {
-            console.log(data);
-            return data;
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+            return Promise.reject(`Ошибка: ${res.status}`);
         });
 }
 
@@ -30,10 +31,11 @@ export const editUserInfo = (_id) => {
             about: 'это не может продолжаться'
         })
     })
-        .then(res => res.json())
-        .then((data) => {
-            console.log(data);
-            return data;
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+            return Promise.reject(`Ошибка: ${res.status}`);
         });
 }
 
@@ -49,10 +51,11 @@ export const uploadNewPlace = (name, link) => {
             link: link
         })
     })
-        .then(res => res.json())
-        .then((data) => {
-            console.log(data);
-            return data;
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+            return Promise.reject(`Ошибка: ${res.status}`);
         });
 }
 
@@ -88,7 +91,7 @@ function deleteFromServer(cardId) {
         method: 'DELETE',
         headers: config.headers
     })
-        .then((res) => {
+        .then(res => {
             if (res.ok) {
                 return res.json();
             }
@@ -107,10 +110,11 @@ function updateAvatar(avatar) {
             avatar: avatar
         })
     })
-        .then(res => res.json())
-        .then((data) => {
-            console.log(data);
-            return data;
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+            return Promise.reject(`Ошибка: ${res.status}`);
         });
 }
 

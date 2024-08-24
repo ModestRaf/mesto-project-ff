@@ -60,6 +60,10 @@ buttonsClosePopup.forEach(button => {
 // Обработчик события сабмита формы добавления новой карточки
 formNewPlace.addEventListener('submit', (event) => {
     event.preventDefault();
+
+    const submitButton = event.submitter; // Используем event.submitter для получения кнопки сабмита
+    submitButton.textContent = 'Сохранение...';
+
     const newCardContent = {
         name: placeNameInput.value,
         link: placeLinkInput.value
@@ -72,16 +76,30 @@ formNewPlace.addEventListener('submit', (event) => {
             closePopup(formNewPlace.closest('.popup'));
             formNewPlace.reset(); // Очищаем форму
         })
+        .catch((err) => {
+            console.log(`Ошибка при добавлении новой карточки: ${err}`);
+        })
+        .finally(() => {
+            submitButton.textContent = 'Создать';
+        });
 });
 
 // Обработчик события сабмита формы редактирования профиля
 function handleFormSubmit(evt) {
     evt.preventDefault(); // Отменяем стандартную отправку формы
 
-    profileTitle.textContent = nameInput.value;
-    profileDescription.textContent = jobInput.value;
+    const submitButton = evt.submitter; // Используем evt.submitter для получения кнопки сабмита
+    submitButton.textContent = 'Сохранение...';
 
-    closePopup(formEditProfile.closest('.popup'));
+    editUserInfo()
+        .then(() => {
+            profileTitle.textContent = nameInput.value;
+            profileDescription.textContent = jobInput.value;
+            closePopup(formEditProfile.closest('.popup'));
+        })
+        .finally(() => {
+            submitButton.textContent = 'Сохранить';
+        });
 }
 
 formEditProfile.addEventListener('submit', handleFormSubmit);
@@ -118,10 +136,20 @@ Promise.all([editUserInfo(), getInitialCards()])
         profileImage.style.backgroundImage = `url(${avatarUrl})`;
         document.querySelector('.popup__form[name="avatar-form"]').addEventListener('submit', (evt) => {
             evt.preventDefault();
-            updateAvatar(avatarUrl).then((data) => {
-                profileImage.src = data.avatar;
-                closePopup(document.querySelector('.popup_type_avatar'));
-            });
+
+            const submitButton = evt.submitter; // Используем evt.submitter для получения кнопки сабмита
+            submitButton.textContent = 'Сохранение...';
+
+            const avatarUrl = profileImage.style.backgroundImage.slice(5, -2); // Извлекаем URL из background-image
+
+            updateAvatar(avatarUrl)
+                .then((data) => {
+                    profileImage.src = data.avatar;
+                    closePopup(document.querySelector('.popup_type_avatar'));
+                })
+                .finally(() => {
+                    submitButton.textContent = 'Сохранить';
+                });
         });
         initialCards.forEach((cardContent) => {
             const cardElement = createCard(cardContent, deleteCard, openImagePopup, userId);
