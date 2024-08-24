@@ -1,5 +1,3 @@
-let userId = '';
-
 export function createCard(cardContent, deleteCallback, openImagePopup, userId) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -23,7 +21,14 @@ export function createCard(cardContent, deleteCallback, openImagePopup, userId) 
 
     // Обработка клика для удаления карточки
     deleteButton.addEventListener('click', () => {
-        deleteCallback(cardElement);
+        // Вызываем глобальную функцию удаления карточки с сервера
+        window.deleteFromServer(cardContent._id)
+            .then(() => {
+                deleteCallback(cardElement);
+            })
+            .catch((err) => {
+                console.error(`Не удалось удалить карточку: ${err}`);
+            });
     });
 
     // Функция для обновления состояния лайка

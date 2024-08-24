@@ -81,3 +81,40 @@ window.removeLike = function (cardId) {
             return Promise.reject(`Ошибка: ${res.status}`);
         });
 }
+
+// Функция для удаления карточки с сервера
+function deleteFromServer(cardId) {
+    return fetch(`${config.baseUrl}/cards/${cardId}`, {
+        method: 'DELETE',
+        headers: config.headers
+    })
+        .then((res) => {
+            if (res.ok) {
+                return res.json();
+            }
+            return Promise.reject(`Ошибка: ${res.status}`);
+        });
+}
+
+function updateAvatar(avatar) {
+    return fetch(`${config.baseUrl}/users/me`, {
+        method: 'PATCH',
+        headers: {
+            authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            avatar: avatar
+        })
+    })
+        .then(res => res.json())
+        .then((data) => {
+            console.log(data);
+            return data;
+        });
+}
+
+// Делаем функцию глобальной
+window.updateAvatar = updateAvatar;
+
+window.deleteFromServer = deleteFromServer;

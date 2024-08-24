@@ -3,11 +3,6 @@ import {createCard, deleteCard} from './components/card.js';
 import {openPopup, closePopup} from './components/modal.js';
 import {enableValidation, clearValidation} from './scripts/validation.js';
 import {editUserInfo, getInitialCards, uploadNewPlace} from './scripts/api.js';
-import avatar from './images/avatar.jpg';
-
-//аватарка
-const profileImage = document.querySelector('.profile__image');
-profileImage.style.backgroundImage = `url(${avatar})`;
 
 // Настройки для валидации
 const validationConfig = {
@@ -100,6 +95,13 @@ function openImagePopup(cardContent) {
     openPopup(popupImage);
 }
 
+//аватар
+const profileImage = document.querySelector('.profile__image');
+profileImage.addEventListener('click', () => {
+    clearValidation(formNewPlace, validationConfig);
+    openPopup(document.querySelector('.popup_type_avatar'));
+});
+
 // Включаем валидацию всех форм
 enableValidation(validationConfig);
 
@@ -109,10 +111,18 @@ let userId = '';
 
 Promise.all([editUserInfo(), getInitialCards()])
     .then(([userData, initialCards]) => {
+        const avatarUrl = userData.avatar;
         userId = userData._id;
-        console.log(userId);
         profileDescription.textContent = userData.about;
         profileTitle.textContent = userData.name;
+        profileImage.style.backgroundImage = `url(${avatarUrl})`;
+        document.querySelector('.popup__form[name="avatar-form"]').addEventListener('submit', (evt) => {
+            evt.preventDefault();
+            updateAvatar(avatarUrl).then((data) => {
+                profileImage.src = data.avatar;
+                closePopup(document.querySelector('.popup_type_avatar'));
+            });
+        });
         initialCards.forEach((cardContent) => {
             const cardElement = createCard(cardContent, deleteCard, openImagePopup, userId);
             placesList.append(cardElement);
