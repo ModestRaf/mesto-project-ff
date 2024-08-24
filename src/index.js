@@ -2,7 +2,7 @@ import './pages/index.css';
 import {createCard, deleteCard} from './components/card.js';
 import {openPopup, closePopup} from './components/modal.js';
 import {enableValidation, clearValidation} from './scripts/validation.js';
-import {editUserInfo, getInitialCards, uploadNewPlace, addLike, removeLike} from './scripts/api.js';
+import {editUserInfo, getInitialCards, uploadNewPlace} from './scripts/api.js';
 import avatar from './images/avatar.jpg';
 
 //аватарка
@@ -72,7 +72,7 @@ formNewPlace.addEventListener('submit', (event) => {
 
     uploadNewPlace(newCardContent.name, newCardContent.link)
         .then((uploadedCardData) => {
-            const newCardElement = createCard(uploadedCardData, deleteCard, openImagePopup);
+            const newCardElement = createCard(uploadedCardData, deleteCard, openImagePopup, userId);
             placesList.prepend(newCardElement); // новая карточка в начале списка
             closePopup(formNewPlace.closest('.popup'));
             formNewPlace.reset(); // Очищаем форму
@@ -105,15 +105,16 @@ enableValidation(validationConfig);
 
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
-let userId = undefined;
+let userId = '';
 
 Promise.all([editUserInfo(), getInitialCards()])
     .then(([userData, initialCards]) => {
         userId = userData._id;
+        console.log(userId);
         profileDescription.textContent = userData.about;
         profileTitle.textContent = userData.name;
         initialCards.forEach((cardContent) => {
-            const cardElement = createCard(cardContent, deleteCard, openImagePopup);
+            const cardElement = createCard(cardContent, deleteCard, openImagePopup, userId);
             placesList.append(cardElement);
         });
     })

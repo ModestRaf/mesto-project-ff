@@ -1,6 +1,6 @@
-// cards.js
+let userId = '';
 
-export function createCard(cardContent, deleteCallback, openImagePopup) {
+export function createCard(cardContent, deleteCallback, openImagePopup, userId) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
     const deleteButton = cardElement.querySelector('.card__delete-button');
@@ -13,6 +13,13 @@ export function createCard(cardContent, deleteCallback, openImagePopup) {
     cardImage.src = cardContent.link;
     cardElement.querySelector('.card__title').textContent = cardContent.name;
     likeCountElement.textContent = cardContent.likes.length;
+
+    // Показываем или скрываем иконку удаления в зависимости от владельца карточки
+    if (cardContent.owner._id === userId) {
+        deleteButton.style.display = 'block';
+    } else {
+        deleteButton.style.display = 'none';
+    }
 
     // Обработка клика для удаления карточки
     deleteButton.addEventListener('click', () => {
@@ -49,7 +56,6 @@ export function createCard(cardContent, deleteCallback, openImagePopup) {
     return cardElement;
 }
 
-// Функция для удаления карточки
 export function deleteCard(cardElement) {
     cardElement.remove();
 }

@@ -1,9 +1,15 @@
+const config = {
+    baseUrl: 'https://nomoreparties.co/v1/wff-cohort-21',
+    headers: {
+        authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
+        'Content-Type': 'application/json'
+    }
+}
+
 // Функция для загрузки карточек
-export function getInitialCards() {
-    return fetch(`https://nomoreparties.co/v1/wff-cohort-21/cards`, {
-        headers: {
-            authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2'
-        }
+export const getInitialCards = () => {
+    return fetch(`${config.baseUrl}/cards`, {
+        headers: config.headers
     })
         .then(res => res.json())
         .then((data) => {
@@ -12,8 +18,8 @@ export function getInitialCards() {
         });
 }
 
-export function editUserInfo() {
-    return fetch(`https://nomoreparties.co/v1/wff-cohort-21/users/me`, {
+export const editUserInfo = (_id) => {
+    return fetch(`${config.baseUrl}/users/me/`, {
         method: 'PATCH',
         headers: {
             authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
@@ -21,18 +27,18 @@ export function editUserInfo() {
         },
         body: JSON.stringify({
             name: 'ModestTea',
-            about: 'это не может продолжаться',
+            about: 'это не может продолжаться'
         })
     })
         .then(res => res.json())
         .then((data) => {
             console.log(data);
-            return (data);
+            return data;
         });
 }
 
-export function uploadNewPlace(name, link) {
-    return fetch(`https://nomoreparties.co/v1/wff-cohort-21/cards`, {
+export const uploadNewPlace = (name, link) => {
+    return fetch(`${config.baseUrl}/cards`, {
         method: 'POST',
         headers: {
             authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
@@ -51,29 +57,27 @@ export function uploadNewPlace(name, link) {
 }
 
 window.addLike = function (cardId) {
-    return fetch(`https://nomoreparties.co/v1/wff-cohort-21/cards/likes/${cardId}`, {
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'PUT',
-        headers: {
-            authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
-        }
+        headers: config.headers
     })
-        .then(res => res.json())
-        .then((data) => {
-            console.log('Card liked:', data);
-            return data;
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+            return Promise.reject(`Ошибка: ${res.status}`);
         });
-};
+}
 
 window.removeLike = function (cardId) {
-    return fetch(`https://nomoreparties.co/v1/wff-cohort-21/cards/likes/${cardId}`, {
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'DELETE',
-        headers: {
-            authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
-        }
+        headers: config.headers
     })
-        .then(res => res.json())
-        .then((data) => {
-            console.log('Like removed:', data);
-            return data;
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+            return Promise.reject(`Ошибка: ${res.status}`);
         });
-};
+}
