@@ -29,7 +29,6 @@ const jobInput = formEditProfile.querySelector('input[name="description"]');
 const formNewPlace = document.querySelector('form[name="new-place"]');
 const placeNameInput = formNewPlace.querySelector('input[name="place-name"]');
 const placeLinkInput = formNewPlace.querySelector('input[name="link"]');
-
 // Контейнер для карточек и вывод карточек на страницу через places__list и перебор массива initialCards
 const placesList = document.querySelector('.places__list');
 
@@ -39,7 +38,6 @@ buttonEditProfile.addEventListener('click', () => {
     // Заполняем поля формы текущими значениями
     nameInput.value = profileTitle.textContent || '';
     jobInput.value = profileDescription.textContent || '';
-
     clearValidation(formEditProfile, validationConfig);
 
     // Открываем попап
@@ -60,10 +58,8 @@ buttonsClosePopup.forEach(button => {
 // Обработчик события сабмита формы добавления новой карточки
 formNewPlace.addEventListener('submit', (event) => {
     event.preventDefault();
-
-    const submitButton = event.submitter; // Используем event.submitter для получения кнопки сабмита
+    const submitButton = event.submitter;
     submitButton.textContent = 'Сохранение...';
-
     const newCardContent = {
         name: placeNameInput.value,
         link: placeLinkInput.value
@@ -74,10 +70,10 @@ formNewPlace.addEventListener('submit', (event) => {
             const newCardElement = createCard(uploadedCardData, deleteCard, openImagePopup, userId);
             placesList.prepend(newCardElement); // новая карточка в начале списка
             closePopup(formNewPlace.closest('.popup'));
-            formNewPlace.reset(); // Очищаем форму
+            formNewPlace.reset();
         })
         .catch((err) => {
-            console.log(`Ошибка при добавлении новой карточки: ${err}`);
+            console.log(err);
         })
         .finally(() => {
             submitButton.textContent = 'Создать';
@@ -87,10 +83,7 @@ formNewPlace.addEventListener('submit', (event) => {
 // Обработчик события сабмита формы редактирования профиля
 function handleFormSubmit(evt) {
     evt.preventDefault(); // Отменяем стандартную отправку формы
-
-    const submitButton = evt.submitter; // Используем evt.submitter для получения кнопки сабмита
-    submitButton.textContent = 'Сохранение...';
-
+    const submitButton = evt.submitter;
     editUserInfo()
         .then(() => {
             profileTitle.textContent = nameInput.value;
@@ -109,7 +102,6 @@ function openImagePopup(cardContent) {
     popupImageElement.src = cardContent.link;
     popupImageElement.alt = cardContent.name;
     popupCaptionElement.textContent = cardContent.name;
-
     openPopup(popupImage);
 }
 
@@ -126,7 +118,6 @@ enableValidation(validationConfig);
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 let userId = '';
-
 Promise.all([editUserInfo(), getInitialCards()])
     .then(([userData, initialCards]) => {
         const avatarUrl = userData.avatar;
@@ -136,12 +127,9 @@ Promise.all([editUserInfo(), getInitialCards()])
         profileImage.style.backgroundImage = `url(${avatarUrl})`;
         document.querySelector('.popup__form[name="avatar-form"]').addEventListener('submit', (evt) => {
             evt.preventDefault();
-
             const submitButton = evt.submitter; // Используем evt.submitter для получения кнопки сабмита
             submitButton.textContent = 'Сохранение...';
-
-            const avatarUrl = profileImage.style.backgroundImage.slice(5, -2); // Извлекаем URL из background-image
-
+            const avatarUrl = profileImage.style.backgroundImage.slice(5, -2);
             updateAvatar(avatarUrl)
                 .then((data) => {
                     profileImage.src = data.avatar;

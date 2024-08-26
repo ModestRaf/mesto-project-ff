@@ -22,10 +22,7 @@ export const getInitialCards = () => {
 export const editUserInfo = (_id) => {
     return fetch(`${config.baseUrl}/users/me/`, {
         method: 'PATCH',
-        headers: {
-            authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({
             name: 'ModestTea',
             about: 'это не может продолжаться'
@@ -42,10 +39,7 @@ export const editUserInfo = (_id) => {
 export const uploadNewPlace = (name, link) => {
     return fetch(`${config.baseUrl}/cards`, {
         method: 'POST',
-        headers: {
-            authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({
             name: name,
             link: link
@@ -86,7 +80,7 @@ window.removeLike = function (cardId) {
 }
 
 // Функция для удаления карточки с сервера
-function deleteFromServer(cardId) {
+function deleteCardFromServer(cardId) {
     return fetch(`${config.baseUrl}/cards/${cardId}`, {
         method: 'DELETE',
         headers: config.headers
@@ -102,10 +96,7 @@ function deleteFromServer(cardId) {
 function updateAvatar(avatar) {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'PATCH',
-        headers: {
-            authorization: '59944b47-fe66-4a44-a85a-cb50f9ee86d2',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({
             avatar: avatar
         })
@@ -118,7 +109,6 @@ function updateAvatar(avatar) {
         });
 }
 
-// Делаем функцию глобальной
+// Делаем функции глобальными
 window.updateAvatar = updateAvatar;
-
-window.deleteFromServer = deleteFromServer;
+window.deleteCardFromServer = deleteCardFromServer;
