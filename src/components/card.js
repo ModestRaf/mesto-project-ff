@@ -1,3 +1,4 @@
+import {addLike, removeLike, deleteCardFromServer} from '../scripts/api.js';
 export function createCard(cardContent, deleteCallback, openImagePopup, userId) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -22,7 +23,7 @@ export function createCard(cardContent, deleteCallback, openImagePopup, userId) 
     // Обработка клика для удаления карточки
     deleteButton.addEventListener('click', () => {
         // Вызываем глобальную функцию удаления карточки с сервера
-        window.deleteCardFromServer(cardContent._id)
+        deleteCardFromServer(cardContent._id)
             .then(() => {
                 deleteCallback(cardElement);
             })
@@ -41,12 +42,12 @@ export function createCard(cardContent, deleteCallback, openImagePopup, userId) 
     likeButton.addEventListener('click', () => {
         const isLiked = likeButton.classList.contains('card__like-button_is-active');
         if (isLiked) {
-            window.removeLike(cardContent._id).then(updatedCard => {
+            removeLike(cardContent._id).then(updatedCard => {
                 cardContent.likes = updatedCard.likes;
                 updateLikeState(false);
             });
         } else {
-            window.addLike(cardContent._id).then(updatedCard => {
+            addLike(cardContent._id).then(updatedCard => {
                 cardContent.likes = updatedCard.likes;
                 updateLikeState(true);
             });

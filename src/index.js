@@ -2,7 +2,7 @@ import './pages/index.css';
 import {createCard, deleteCard} from './components/card.js';
 import {openPopup, closePopup} from './components/modal.js';
 import {enableValidation, clearValidation} from './scripts/validation.js';
-import {editUserInfo, getInitialCards, uploadNewPlace} from './scripts/api.js';
+import {editUserInfo, getInitialCards, uploadNewPlace, updateAvatar} from './scripts/api.js';
 
 // Настройки для валидации
 const validationConfig = {
@@ -13,19 +13,29 @@ const validationConfig = {
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'popup__error_visible'
 };
+
 const popupImage = document.querySelector('.popup_type_image');
 const popupImageElement = popupImage.querySelector('.popup__image');
 const popupCaptionElement = popupImage.querySelector('.popup__caption');
+//аватар
+const popupAvatar = document.querySelector('.popup_type_avatar');
+const formAvatar = document.querySelector('form[name="avatar-form"]');
+const avatarInput = formAvatar.querySelector('input[name="avatar"]');
 //закрытие попапа
 const buttonsClosePopup = document.querySelectorAll('.popup__close');
 //профиль
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const buttonAddCard = document.querySelector('.profile__add-button');
-//редактирование профиля
+//профиль
+const profileDescription = document.querySelector('.profile__description');
+const popupEdit = document.querySelector('.popup_type_edit');
+const profileImage = document.querySelector('.profile__image');
+const profileTitle = document.querySelector('.profile__title');
 const formEditProfile = document.querySelector('form[name="edit-profile"]');
 const nameInput = formEditProfile.querySelector('input[name="name"]');
 const jobInput = formEditProfile.querySelector('input[name="description"]');
 //новая карточка
+const popupNewCard = document.querySelector('.popup_type_new-card');
 const formNewPlace = document.querySelector('form[name="new-place"]');
 const placeNameInput = formNewPlace.querySelector('input[name="place-name"]');
 const placeLinkInput = formNewPlace.querySelector('input[name="link"]');
@@ -41,12 +51,12 @@ buttonEditProfile.addEventListener('click', () => {
     clearValidation(formEditProfile, validationConfig);
 
     // Открываем попап
-    openPopup(document.querySelector('.popup_type_edit'));
+    openPopup(popupEdit);
 });
 
 buttonAddCard.addEventListener('click', () => {
     clearValidation(formNewPlace, validationConfig);
-    openPopup(document.querySelector('.popup_type_new-card'));
+    openPopup(popupNewCard);
 });
 
 buttonsClosePopup.forEach(button => {
@@ -56,7 +66,7 @@ buttonsClosePopup.forEach(button => {
 });
 
 // Обработчик события сабмита формы добавления новой карточки
-formNewPlace.addEventListener('submit', (event) => {
+function handleFormNewPlaceSubmit(event) {
     event.preventDefault();
     const submitButton = event.submitter;
     submitButton.textContent = 'Сохранение...';
@@ -64,7 +74,6 @@ formNewPlace.addEventListener('submit', (event) => {
         name: placeNameInput.value,
         link: placeLinkInput.value
     };
-
     uploadNewPlace(newCardContent.name, newCardContent.link)
         .then((uploadedCardData) => {
             const newCardElement = createCard(uploadedCardData, deleteCard, openImagePopup, userId);
@@ -78,24 +87,29 @@ formNewPlace.addEventListener('submit', (event) => {
         .finally(() => {
             submitButton.textContent = 'Создать';
         });
-});
+}
+
+formNewPlace.addEventListener('submit', handleFormNewPlaceSubmit);
 
 // Обработчик события сабмита формы редактирования профиля
-function handleFormSubmit(evt) {
-    evt.preventDefault(); // Отменяем стандартную отправку формы
+function handleFormProfileSubmit(evt) {
+    evt.preventDefault();
     const submitButton = evt.submitter;
     editUserInfo()
         .then(() => {
             profileTitle.textContent = nameInput.value;
             profileDescription.textContent = jobInput.value;
-            closePopup(formEditProfile.closest('.popup'));
+            closePopup(formEditProfile);
+        })
+        .catch((err) => {
+            console.log(err);
         })
         .finally(() => {
             submitButton.textContent = 'Сохранить';
         });
 }
 
-formEditProfile.addEventListener('submit', handleFormSubmit);
+formEditProfile.addEventListener('submit', handleFormProfileSubmit);
 
 //открытие попапа с изображением
 function openImagePopup(cardContent) {
@@ -106,17 +120,14 @@ function openImagePopup(cardContent) {
 }
 
 //аватар
-const profileImage = document.querySelector('.profile__image');
 profileImage.addEventListener('click', () => {
     clearValidation(formNewPlace, validationConfig);
-    openPopup(document.querySelector('.popup_type_avatar'));
+    openPopup(popupAvatar);
 });
 
 // Включаем валидацию всех форм
 enableValidation(validationConfig);
 
-const profileTitle = document.querySelector('.profile__title');
-const profileDescription = document.querySelector('.profile__description');
 let userId = '';
 Promise.all([editUserInfo(), getInitialCards()])
     .then(([userData, initialCards]) => {
@@ -125,15 +136,18 @@ Promise.all([editUserInfo(), getInitialCards()])
         profileDescription.textContent = userData.about;
         profileTitle.textContent = userData.name;
         profileImage.style.backgroundImage = `url(${avatarUrl})`;
-        document.querySelector('.popup__form[name="avatar-form"]').addEventListener('submit', (evt) => {
+        formAvatar.addEventListener('submit', (evt) => {
             evt.preventDefault();
-            const submitButton = evt.submitter; // Используем evt.submitter для получения кнопки сабмита
+            const submitButton = evt.submitter;
             submitButton.textContent = 'Сохранение...';
-            const avatarUrl = profileImage.style.backgroundImage.slice(5, -2);
-            updateAvatar(avatarUrl)
-                .then((data) => {
-                    profileImage.src = data.avatar;
-                    closePopup(document.querySelector('.popup_type_avatar'));
+            const newAvatarUrl = avatarInput.value;
+            updateAvatar(newAvatarUrl)
+                .then(() => {
+                    profileImage.src = newAvatarUrl;
+                    closePopup(popupAvatar);
+                })
+                .catch((err) => {
+                    console.log(err);
                 })
                 .finally(() => {
                     submitButton.textContent = 'Сохранить';

@@ -1,6 +1,5 @@
 // Функции открытия и закрытия попапов с анимацией
 export function openPopup(popup) {
-    popup.classList.add('popup_is-animated');
     popup.classList.add('popup_is-opened');
     document.addEventListener('keydown', closePopupOnEsc);
     popup.addEventListener('click', closePopupOnOverlay);
@@ -10,10 +9,6 @@ export function closePopup(popup) {
     popup.classList.remove('popup_is-opened');
     document.removeEventListener('keydown', closePopupOnEsc);
     popup.removeEventListener('click', closePopupOnOverlay);
-
-    popup.addEventListener('transition', () => {
-        popup.classList.remove('popup_is-animated');
-    }, {once: true});
 }
 
 // закрытие попапов на Esc

@@ -5,18 +5,20 @@ const config = {
         'Content-Type': 'application/json'
     }
 }
+const checkResponse = (res) => {
+    if (res.ok) {
+        return res.json();
+    } else {
+        return Promise.reject(`Ошибка: ${res.status}`);
+    }
+}
 
 // Функция для загрузки карточек
 export const getInitialCards = () => {
     return fetch(`${config.baseUrl}/cards`, {
         headers: config.headers
     })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(checkResponse);
 }
 
 export const editUserInfo = (_id) => {
@@ -28,12 +30,7 @@ export const editUserInfo = (_id) => {
             about: 'это не может продолжаться'
         })
     })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(checkResponse);
 }
 
 export const uploadNewPlace = (name, link) => {
@@ -45,70 +42,41 @@ export const uploadNewPlace = (name, link) => {
             link: link
         })
     })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(checkResponse);
 }
 
-window.addLike = function (cardId) {
+export function addLike(cardId) {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'PUT',
         headers: config.headers
     })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(checkResponse);
 }
 
-window.removeLike = function (cardId) {
+export function removeLike(cardId) {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'DELETE',
         headers: config.headers
     })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(checkResponse);
 }
 
 // Функция для удаления карточки с сервера
-function deleteCardFromServer(cardId) {
+export function deleteCardFromServer(cardId) {
     return fetch(`${config.baseUrl}/cards/${cardId}`, {
         method: 'DELETE',
         headers: config.headers
     })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(checkResponse);
 }
 
-function updateAvatar(avatar) {
-    return fetch(`${config.baseUrl}/users/me`, {
+export function updateAvatar(avatarUrl) {
+    return fetch(`${config.baseUrl}/users/me/avatar`, {
         method: 'PATCH',
         headers: config.headers,
         body: JSON.stringify({
-            avatar: avatar
+            avatar: avatarUrl
         })
     })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(`Ошибка: ${res.status}`);
-        });
+        .then(checkResponse);
 }
-
-// Делаем функции глобальными
-window.updateAvatar = updateAvatar;
-window.deleteCardFromServer = deleteCardFromServer;
