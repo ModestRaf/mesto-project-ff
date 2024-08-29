@@ -1,4 +1,5 @@
-import {addLike, removeLike, deleteCardFromServer} from '../scripts/api.js';
+import {removeLike, addLike, deleteCardFromServer} from '../scripts/api.js';
+
 export function createCard(cardContent, deleteCallback, openImagePopup, userId) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -64,4 +65,5 @@ export function createCard(cardContent, deleteCallback, openImagePopup, userId) 
 
 export function deleteCard(cardElement) {
     cardElement.remove();
+
 }
